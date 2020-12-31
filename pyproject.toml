@@ -9,6 +9,7 @@ license = "MIT"
 python = "^3.8"
 Django = "^3.1.4"
 psycopg2 = "^2.8.6"
+djangorestframework = "^3.12.2"
 
 [tool.poetry.dev-dependencies]
 
