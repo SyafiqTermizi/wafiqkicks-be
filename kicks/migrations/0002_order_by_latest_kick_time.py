@@ -6,12 +6,12 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('kicks', '0001_create_kick_model'),
+        ("kicks", "0001_create_kick_model"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='kick',
-            options={'ordering': ['-kick_time']},
+            name="kick",
+            options={"ordering": ["-kick_time"]},
         ),
     ]
