@@ -48,7 +48,8 @@ class DailyChartView(APIView):
 
         kicks_per_hour = {}
         for hour in hours:
-            kicks_per_hour[hour.hour] = Kick.objects.filter(
+
+            kicks_per_hour[hour.strftime("%-I %p")] = Kick.objects.filter(
                 kick_time__gte=hour, kick_time__lte=(hour + timedelta(hours=1))
             ).count()
 
