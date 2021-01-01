@@ -24,7 +24,7 @@ services:
       - kicking_db_volume:/var/lib/postgresql/data:Z
 
   kicking_server:
-    image: nginx:1.15.8-alpine
+    image: nginx:1.19-alpine
     ports:
       - 80:80
     volumes:
