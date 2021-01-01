@@ -1,5 +1,9 @@
 version: "3"
 
+volumes:
+  kicking_staticfiles_volume: {}
+  kicking_db_volume: {}
+
 services:
   kicking_db:
     image: postgres:13-alpine
@@ -16,7 +20,8 @@ services:
     depends_on:
       - kicking_db
     volumes:
-      - ../:/app
+      - kicking_staticfiles_volume:/app/staticfiles:z
+      - kicking_db_volume:/var/lib/postgresql/data:Z
 
   kicking_server:
     image: nginx:1.15.8-alpine
@@ -24,6 +29,6 @@ services:
       - 80:80
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
-      - ../staticfiles/:/staticfiles/
+      - kicking_staticfiles_volume:/app/staticfiles:z
     depends_on:
       - kicking_prod
