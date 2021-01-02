@@ -23,7 +23,7 @@ services:
       - kicking_staticfiles_volume:/app/staticfiles:z
       - kicking_db_volume:/var/lib/postgresql/data:Z
 
-  kicking_server:
+  nginx:
     image: nginx:1.19-alpine
     ports:
       - 80:80
@@ -36,7 +36,7 @@ services:
     depends_on:
       - kicking_prod
 
-  kicking_certbot:
+  certbot:
     image: certbot/certbot
     volumes:
       - ./data/certbot/conf:/etc/letsencrypt

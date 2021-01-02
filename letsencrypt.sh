@@ -8,7 +8,7 @@ fi
 domains=(syafiqtermizi.com)
 rsa_key_size=4096
 data_path="./data/certbot"
-email="" # Adding a valid address is strongly recommended
+email="ahmadsyafiq93@gmail.com" # Adding a valid address is strongly recommended
 staging=0 # Set to 1 if you're testing your setup to avoid hitting request limits
 
 if [ -d "$data_path" ]; then
@@ -34,19 +34,19 @@ docker-compose run --rm --entrypoint "\
   openssl req -x509 -nodes -newkey rsa:$rsa_key_size -days 1\
     -keyout '$path/privkey.pem' \
     -out '$path/fullchain.pem' \
-    -subj '/CN=localhost'" kicking_certbot
+    -subj '/CN=localhost'" certbot
 echo
 
 
 echo "### Starting nginx ..."
-docker-compose up --force-recreate -d kicking_server
+docker-compose up --force-recreate -d nginx
 echo
 
 echo "### Deleting dummy certificate for $domains ..."
 docker-compose run --rm --entrypoint "\
   rm -Rf /etc/letsencrypt/live/$domains && \
   rm -Rf /etc/letsencrypt/archive/$domains && \
-  rm -Rf /etc/letsencrypt/renewal/$domains.conf" kicking_certbot
+  rm -Rf /etc/letsencrypt/renewal/$domains.conf" certbot
 echo
 
 
@@ -73,8 +73,8 @@ docker-compose run --rm --entrypoint "\
     $domain_args \
     --rsa-key-size $rsa_key_size \
     --agree-tos \
-    --force-renewal" kicking_certbot
+    --force-renewal" certbot
 echo
 
 echo "### Reloading nginx ..."
-docker-compose exec wafiq_kicking_server nginx -s reload
+docker-compose exec nginx nginx -s reload
