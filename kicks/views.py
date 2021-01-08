@@ -15,42 +15,23 @@ class KickCountUpView(APIView):
     """
 
     def post(self, request, *args, **kwargs):
-        try:
-            last_kick_time = Kick.objects.latest().kick_time
-        except Kick.DoesNotExist:
-            pass
-        else:
-            delta = timezone.now() - last_kick_time
-
-            # only allow user to update data once every minute
-            if delta.total_seconds() < 59:
-                return Response(status=403)
-
-        Kick.objects.create()
-        return Response(status=201)
+        if Kick.can_kick():
+            Kick.objects.create()
+            return Response(status=201)
+        return Response(status=403)
 
 
 class DailyKickSummaryView(APIView):
     """
     This endpoint will return daily kick summary.
-    The data returned:
-        1. First kick time
-        2. Last kick time
-        3. Total kick for today
     """
 
     def get(self, request, *args, **kwargs):
-        today_kicks = Kick.objects.filter(kick_time__gte=get_start_hour())
-        today_kick_count = today_kicks.count()
-
-        if not today_kick_count:
+        try:
+            data = Kick.get_daily_summary()
+        except Kick.DoesNotExist:
             raise NotFound
-
-        first_kick = today_kicks.earliest().kick_time
-        latest_kick = today_kicks.latest().kick_time
-        res = {"kicks": today_kick_count, "first": first_kick, "last": latest_kick}
-
-        return Response(data=res, status=200)
+        return Response(data=data, status=200)
 
 
 class DailyChartView(APIView):
@@ -60,21 +41,15 @@ class DailyChartView(APIView):
                 request.query_params.get("date", ""), "%Y-%m-%d"
             )
         except ValueError:
-            hours = Kick.objects.filter(kick_time__gte=get_start_hour()).datetimes(
-                "kick_time", "hour"
-            )
+            hours = Kick.objects.get_today_kicks_by_hour()
         else:
-            hours = Kick.objects.filter(
-                kick_time__day=parsed_date.day,
-                kick_time__month=parsed_date.month,
-                kick_time__year=parsed_date.year,
-            ).datetimes("kick_time", "hour")
+            hours = Kick.objects.get_kicks_by_hour_for_date(parsed_date)
 
         kicks_per_hour = {}
         for hour in hours:
-            kicks_per_hour[hour.strftime("%-I %p")] = Kick.objects.filter(
-                kick_time__gte=hour, kick_time__lte=(hour + timedelta(hours=1))
-            ).count()
+            kicks_per_hour[
+                hour.strftime("%-I %p")
+            ] = Kick.objects.get_kick_count_for_hour(hour)
 
         return Response(data=kicks_per_hour, status=200)
 
