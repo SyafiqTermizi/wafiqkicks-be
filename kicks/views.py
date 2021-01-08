@@ -1,11 +1,9 @@
-from datetime import datetime, timedelta
-from django.utils import timezone
+from datetime import datetime
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 
 from .models import Kick
-from .utils import get_start_hour
 
 
 class KickCountUpView(APIView):
