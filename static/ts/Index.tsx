@@ -15,10 +15,20 @@ const App = () => (
         <Chart />
       </Route>
     </Switch>
-    <br />
-    <Link to="/">Home</Link>
-    <br />
-    <Link to="/chart">Chart</Link>
+    <div className="fixed-bottom navbar-light bg-light">
+      <div className="row">
+        <div className="col-6 text-center">
+          <Link className="nav-link" to="/">
+            Counter
+          </Link>
+        </div>
+        <div className="col-6 text-center">
+          <Link className="nav-link" to="/chart">
+            Hourly Data
+          </Link>
+        </div>
+      </div>
+    </div>
   </Router>
 );
 
