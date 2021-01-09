@@ -2,15 +2,13 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 import dayjs from "dayjs";
 
+import { isObjectEmpty, isDateToday } from "../utils";
 import axios from "../axiosConfig";
 export interface Data {
   [key: string]: string;
 }
 
 export const Chart: React.FC = () => {
-  const isObjectEmpty = (obj: { [key: string]: string }) =>
-    Object.keys(obj).length === 0 && obj.constructor === Object;
-
   const [kickPerHour, setKickPerHour] = useState<Data>({});
   const [totalKicks, setTotalKicks] = useState<number>(0);
   const [kickDates, setKickDates] = useState<string[]>([]);
@@ -50,22 +48,24 @@ export const Chart: React.FC = () => {
           <hr />
         </div>
       </div>
-      <div className="row">
-        <div className="col-12">
-          <select
-            className="form-control"
-            name="cars"
-            id="cars"
-            onChange={(e) => setSelectedDate(e.target.value)}
-          >
-            {kickDates.map((date) => (
-              <option value={date} key={date}>
-                {dayjs(date).format("ddd D MMM YYYY")}
-              </option>
-            ))}
-          </select>
+      {kickDates.length > 0 && (
+        <div className="row">
+          <div className="col-12">
+            <select
+              className="form-control"
+              name="date"
+              onChange={(e) => setSelectedDate(e.target.value)}
+              value={selectedDate}
+            >
+              {kickDates.map((date) => (
+                <option value={date} key={date}>
+                  {dayjs(date).format("ddd D MMM YYYY")}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
-      </div>
+      )}
       <div className="row mt-5">
         <div className="col-12">
           <table className="table table-striped">

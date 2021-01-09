@@ -49,22 +49,24 @@ export const Counter: React.FC = () => {
           </button>
         </div>
       </div>
-      <div className="row mt-3">
-        <div className="col-12 text-center">
-          <p>
-            <b>Kicks:&nbsp;</b>
-            {dailySummary.kicks}
-          </p>
-          <p>
-            <b>First:&nbsp;</b>
-            {dayjs(dailySummary.first).format("h:mm A")}
-          </p>
-          <p>
-            <b>Latest:&nbsp;</b>
-            {dayjs(dailySummary.last).format("h:mm A")}
-          </p>
+      {Boolean(dailySummary.kicks) && (
+        <div className="row mt-3">
+          <div className="col-12 text-center">
+            <p>
+              <b>Kicks:&nbsp;</b>
+              {dailySummary.kicks}
+            </p>
+            <p>
+              <b>First:&nbsp;</b>
+              {dayjs(dailySummary.first).format("h:mm A")}
+            </p>
+            <p>
+              <b>Latest:&nbsp;</b>
+              {dayjs(dailySummary.last).format("h:mm A")}
+            </p>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
