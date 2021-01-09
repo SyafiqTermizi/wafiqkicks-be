@@ -1,6 +1,14 @@
 import * as React from "react";
 import * as ReactDom from "react-dom";
-import { HashRouter as Router, Switch, Route, Link } from "react-router-dom";
+import {
+  HashRouter as Router,
+  Switch,
+  Route,
+  NavLink,
+  Redirect,
+} from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStopwatch, faChartBar } from "@fortawesome/free-solid-svg-icons";
 
 import { Counter } from "./pages/Counter";
 import { Chart } from "./pages/Chart";
@@ -9,6 +17,9 @@ const App = () => (
   <Router>
     <Switch>
       <Route path="/" exact={true}>
+        <Redirect to="/home" />
+      </Route>
+      <Route path="/home" exact={true}>
         <Counter />
       </Route>
       <Route path="/chart" exact={true}>
@@ -18,14 +29,14 @@ const App = () => (
     <div className="fixed-bottom navbar-light bg-light">
       <div className="row">
         <div className="col-6 text-center">
-          <Link className="nav-link" to="/">
-            Counter
-          </Link>
+          <NavLink className="nav-link" to="/home">
+            <FontAwesomeIcon icon={faStopwatch} />
+          </NavLink>
         </div>
         <div className="col-6 text-center">
-          <Link className="nav-link" to="/chart">
-            Hourly Data
-          </Link>
+          <NavLink className="nav-link" to="/chart">
+            <FontAwesomeIcon icon={faChartBar} />
+          </NavLink>
         </div>
       </div>
     </div>
