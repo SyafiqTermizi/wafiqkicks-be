@@ -15,7 +15,7 @@ export const Chart: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<string>("");
 
   const fetchData = () => {
-    // if (!selectedDate) return;
+    if (!selectedDate) return;
     axios
       .get(`/kicks/daily-chart/?date=${selectedDate}`)
       .then((res) => {
@@ -34,7 +34,9 @@ export const Chart: React.FC = () => {
       .get("/kicks/dates/")
       .then((res) => {
         setKickDates(res.data);
-        setSelectedDate(res.data[0] ? res.data[0] : "0");
+        if (res.data.length > 0) {
+          setSelectedDate(res.data[0]);
+        }
       })
       .catch((err) => err);
   };
