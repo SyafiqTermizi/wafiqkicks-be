@@ -1,15 +1,16 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
-import dayjs from "dayjs";
 
 import axios from "../axiosConfig";
+import { DailySummary } from "../components/DailySummary";
+import { TitleBar } from "../components/TitleBar";
 
 export const Counter: React.FC = () => {
   const [disableButton, setDisableButton] = useState(false);
   const [dailySummary, setDailySummary] = useState({
     kicks: 0,
-    first: 0,
-    last: 0,
+    first: "",
+    last: "",
   });
 
   const fetchDailySummary = () => {
@@ -38,11 +39,7 @@ export const Counter: React.FC = () => {
 
   return (
     <>
-      <nav className="navbar navbar-expand-lg navbar-light bg-primary">
-        <a className="navbar-brand text-white" href="#">
-          Kick Counter
-        </a>
-      </nav>
+      <TitleBar title="Kick Counter" />
       <div className="container" style={{ paddingTop: "35vh" }}>
         <div className="row">
           <div className="col-12 text-center">
@@ -56,26 +53,11 @@ export const Counter: React.FC = () => {
           </div>
         </div>
         {Boolean(dailySummary.kicks) && (
-          <div className="row mt-3 text-center">
-            <div className="col-4">
-              <p>Kicks</p>
-              <p className="text-primary">
-                <b>{dailySummary.kicks}</b>
-              </p>
-            </div>
-            <div className="col-4">
-              <p>First</p>
-              <p className="text-primary">
-                <b>{dayjs(dailySummary.first).format("h:mm A")}</b>
-              </p>
-            </div>
-            <div className="col-4">
-              <p>Last</p>
-              <p className="text-primary">
-                <b>{dayjs(dailySummary.last).format("h:mm A")}</b>
-              </p>
-            </div>
-          </div>
+          <DailySummary
+            kicks={dailySummary.kicks}
+            firstKickTime={dailySummary.first}
+            lastKickTime={dailySummary.last}
+          />
         )}
       </div>
     </>

@@ -3,8 +3,10 @@ import { useState, useEffect } from "react";
 import dayjs from "dayjs";
 
 import { isObjectEmpty } from "../utils";
+import { TitleBar } from "../components/TitleBar";
 import axios from "../axiosConfig";
-export interface Data {
+
+interface Data {
   [key: string]: string;
 }
 
@@ -51,11 +53,7 @@ export const Chart: React.FC = () => {
 
   return (
     <>
-      <nav className="navbar navbar-expand-lg navbar-light bg-primary">
-        <a className="navbar-brand text-white" href="#">
-          Hourly Kicks
-        </a>
-      </nav>
+      <TitleBar title="Hourly Kicks" />
       <div className="container mt-5">
         {kickDates.length > 0 && (
           <div className="row">
