@@ -6,7 +6,7 @@ import { TitleBar } from "../components/TitleBar";
 import { DailySummary } from "../components/DailySummary";
 
 interface Props {
-  disableButton: Boolean;
+  disableButton: boolean;
   setDisableButton: (value: any) => void;
 }
 
