@@ -2,11 +2,18 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 
 import axios from "../axiosConfig";
-import { DailySummary } from "../components/DailySummary";
 import { TitleBar } from "../components/TitleBar";
+import { DailySummary } from "../components/DailySummary";
 
-export const Counter: React.FC = () => {
-  const [disableButton, setDisableButton] = useState(false);
+interface Props {
+  disableButton: Boolean;
+  setDisableButton: (value: any) => void;
+}
+
+export const Counter: React.FC<Props> = ({
+  disableButton,
+  setDisableButton,
+}) => {
   const [dailySummary, setDailySummary] = useState({
     kicks: 0,
     first: "",
