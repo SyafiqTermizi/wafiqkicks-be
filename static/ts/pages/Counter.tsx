@@ -37,36 +37,47 @@ export const Counter: React.FC = () => {
   };
 
   return (
-    <div className="container" style={{ paddingTop: "35vh" }}>
-      <div className="row">
-        <div className="col-12 text-center">
-          <button
-            onClick={() => submit()}
-            disabled={disableButton}
-            className="btn btn-primary"
-          >
-            Kick!
-          </button>
-        </div>
-      </div>
-      {Boolean(dailySummary.kicks) && (
-        <div className="row mt-3">
+    <>
+      <nav className="navbar navbar-expand-lg navbar-light bg-primary">
+        <a className="navbar-brand text-white" href="#">
+          Kick Counter
+        </a>
+      </nav>
+      <div className="container" style={{ paddingTop: "35vh" }}>
+        <div className="row">
           <div className="col-12 text-center">
-            <p>
-              <b>Kicks:&nbsp;</b>
-              {dailySummary.kicks}
-            </p>
-            <p>
-              <b>First:&nbsp;</b>
-              {dayjs(dailySummary.first).format("h:mm A")}
-            </p>
-            <p>
-              <b>Latest:&nbsp;</b>
-              {dayjs(dailySummary.last).format("h:mm A")}
-            </p>
+            <button
+              onClick={() => submit()}
+              disabled={disableButton}
+              className="btn btn-primary btn-lg"
+            >
+              Kick!
+            </button>
           </div>
         </div>
-      )}
-    </div>
+        {Boolean(dailySummary.kicks) && (
+          <div className="row mt-3 text-center">
+            <div className="col-4">
+              <p>Kicks</p>
+              <p className="text-primary">
+                <b>{dailySummary.kicks}</b>
+              </p>
+            </div>
+            <div className="col-4">
+              <p>First</p>
+              <p className="text-primary">
+                <b>{dayjs(dailySummary.first).format("h:mm A")}</b>
+              </p>
+            </div>
+            <div className="col-4">
+              <p>Last</p>
+              <p className="text-primary">
+                <b>{dayjs(dailySummary.last).format("h:mm A")}</b>
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+    </>
   );
 };

@@ -2,7 +2,7 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 import dayjs from "dayjs";
 
-import { isObjectEmpty, isDateToday } from "../utils";
+import { isObjectEmpty } from "../utils";
 import axios from "../axiosConfig";
 export interface Data {
   [key: string]: string;
@@ -50,55 +50,56 @@ export const Chart: React.FC = () => {
   }, [selectedDate]);
 
   return (
-    <div className="container">
-      <div className="row">
-        <div className="col-12">
-          <h3>Hourly Kicks</h3>
-          <hr />
-        </div>
-      </div>
-      {kickDates.length > 0 && (
-        <div className="row">
+    <>
+      <nav className="navbar navbar-expand-lg navbar-light bg-primary">
+        <a className="navbar-brand text-white" href="#">
+          Hourly Kicks
+        </a>
+      </nav>
+      <div className="container mt-5">
+        {kickDates.length > 0 && (
+          <div className="row">
+            <div className="col-12">
+              <select
+                className="form-control"
+                name="date"
+                onChange={(e) => setSelectedDate(e.target.value)}
+                value={selectedDate}
+              >
+                {kickDates.map((date) => (
+                  <option value={date} key={date}>
+                    {dayjs(date).format("ddd D MMM YYYY")}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        )}
+        <div className="row mt-5">
           <div className="col-12">
-            <select
-              className="form-control"
-              name="date"
-              onChange={(e) => setSelectedDate(e.target.value)}
-              value={selectedDate}
-            >
-              {kickDates.map((date) => (
-                <option value={date} key={date}>
-                  {dayjs(date).format("ddd D MMM YYYY")}
-                </option>
-              ))}
-            </select>
+            <table className="table table-striped">
+              <thead>
+                <tr>
+                  <th scope="col">Time</th>
+                  <th scope="col">Count</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Object.keys(kickPerHour).map((hour) => (
+                  <tr key={hour}>
+                    <td scope="row">{hour}</td>
+                    <td>{kickPerHour[hour]}</td>
+                  </tr>
+                ))}
+                <tr>
+                  <th>Total</th>
+                  <td>{totalKicks}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
-      )}
-      <div className="row mt-5">
-        <div className="col-12">
-          <table className="table table-striped">
-            <thead>
-              <tr>
-                <th scope="col">Time</th>
-                <th scope="col">Count</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Object.keys(kickPerHour).map((hour) => (
-                <tr key={hour}>
-                  <td scope="row">{hour}</td>
-                  <td>{kickPerHour[hour]}</td>
-                </tr>
-              ))}
-              <tr>
-                <th>Total</th>
-                <td>{totalKicks}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
       </div>
-    </div>
+    </>
   );
 };
