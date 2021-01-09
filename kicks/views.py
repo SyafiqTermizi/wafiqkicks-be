@@ -1,4 +1,6 @@
 from datetime import datetime
+
+from django.utils import timezone
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
@@ -39,10 +41,9 @@ class DailyChartView(APIView):
                 request.query_params.get("date", ""), "%Y-%m-%d"
             )
         except ValueError:
-            hours = Kick.objects.get_today_kicks_by_hour()
-        else:
-            hours = Kick.objects.get_kicks_by_hour_for_date(parsed_date)
+            parsed_date = timezone.now()
 
+        hours = Kick.objects.get_kicks_by_hour_for_date(parsed_date)
         kicks_per_hour = {}
         for hour in hours:
             kicks_per_hour[
@@ -59,5 +60,4 @@ class KickDatesView(APIView):
 
     def get(self, request, *args, **kwargs):
         days = Kick.objects.dates("kick_time", "day")
-
-        return Response(data=days, status=200)
+        return Response(data=sorted(days, reverse=True), status=200)
