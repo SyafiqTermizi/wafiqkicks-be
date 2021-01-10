@@ -1,9 +1,8 @@
 from datetime import datetime
 
-from django.utils import timezone
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.exceptions import NotFound, bad_request
+from rest_framework.exceptions import NotFound
 
 from .models import Kick
 
@@ -43,14 +42,9 @@ class DailyChartView(APIView):
         except ValueError:
             return Response(status=400, exception=True)
 
-        hours = Kick.objects.get_kicks_by_hour_for_date(parsed_date)
-        kicks_per_hour = {}
-        for hour in hours:
-            kicks_per_hour[
-                hour.strftime("%-I %p")
-            ] = Kick.objects.get_kick_count_for_hour(hour)
-
-        return Response(data=kicks_per_hour, status=200)
+        return Response(
+            data=Kick.get_hourly_kick_count_for_date(parsed_date), status=200
+        )
 
 
 class FetalMovementChartView(APIView):

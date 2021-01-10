@@ -1,44 +1,17 @@
-from datetime import timedelta
-
 from django.db import models
+from django.db.models import Count
+from django.db.models.functions.datetime import Trunc
 from django.utils import timezone
 
 from .utils import get_start_hour
 
 
 class KickManager(models.Manager):
-    def get_kick_count_for_hour(self, hour, *args, **kwargs):
-        return (
-            self.get_queryset()
-            .filter(kick_time__gte=hour, kick_time__lte=(hour + timedelta(hours=1)))
-            .count()
-        )
-
     def get_today_kicks(self, *args, **kwargs):
         """
         return qs of all kicks that's after 9 a.m
         """
         return self.get_queryset().filter(kick_time__gte=get_start_hour())
-
-    def get_today_kick_count(self, *args, **kwargs):
-        """
-        return count of kick that's after 9 a.m
-        """
-        return self.get_today_kicks().count()
-
-    def get_kicks_by_hour_for_date(self, datetime, *args, **kwargs):
-        """
-        return hours of the baby is kicking for a date
-        """
-        return (
-            self.get_queryset()
-            .filter(
-                kick_time__day=datetime.day,
-                kick_time__month=datetime.month,
-                kick_time__year=datetime.year,
-            )
-            .datetimes("kick_time", "hour")
-        )
 
 
 class Kick(models.Model):
@@ -63,16 +36,34 @@ class Kick(models.Model):
             2. Last kick time
             3. Total kick for today
         """
-        today_kicks = Kick.objects.get_today_kicks()
-        today_kick_count = today_kicks.count()
+        today_kicks = cls.objects.get_today_kicks()
 
         if not today_kicks.exists():
             raise cls.DoesNotExist
 
-        first_kick = today_kicks.earliest().kick_time
-        latest_kick = today_kicks.latest().kick_time
+        return {
+            "kicks": today_kicks.count(),
+            "first": today_kicks.earliest().kick_time,
+            "last": today_kicks.latest().kick_time,
+        }
 
-        return {"kicks": today_kick_count, "first": first_kick, "last": latest_kick}
+    @classmethod
+    def get_hourly_kick_count_for_date(cls, date_time):
+        qs = list(
+            cls.objects.filter(kick_time__date=date_time.date())
+            .annotate(hours=Trunc("kick_time", "hour"))
+            .values("hours")
+            .annotate(kicks=Count("id"))
+            .order_by("kick_time")
+        )
+
+        kicks_per_hour = {}
+        for item in qs:
+            try:
+                kicks_per_hour[item["hours"].strftime("%-I %p")] += 1
+            except KeyError:
+                kicks_per_hour[item["hours"].strftime("%-I %p")] = 1
+        return kicks_per_hour
 
     @classmethod
     def can_kick(cls):
@@ -81,13 +72,13 @@ class Kick(models.Model):
         ago, return False
         """
         try:
-            last_kick_time = Kick.objects.latest().kick_time
-        except Kick.DoesNotExist:
+            last_kick_time = cls.objects.latest().kick_time
+        except cls.DoesNotExist:
             return True
         else:
             delta = timezone.now() - last_kick_time
 
-            # only allow user to update data once every minute
+            # only allow user to create kick once every minute
             if delta.total_seconds() > 59:
                 return True
 
