@@ -5,7 +5,7 @@ interface Props {
 }
 
 export const TitleBar: React.FC<Props> = ({ title }) => (
-  <nav className="navbar navbar-expand-lg navbar-light bg-primary">
+  <nav className="fixed-top navbar navbar-expand-lg navbar-light bg-primary">
     <a className="navbar-brand text-white" href="#">
       {title}
     </a>

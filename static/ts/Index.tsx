@@ -10,6 +10,7 @@ import {
 
 import { Counter } from "./pages/Counter";
 import { Chart } from "./pages/Chart";
+import { FetalMovementChart } from "./pages/FMC";
 import { BottomNavbar } from "./components/BottomNavbar";
 
 const App = () => {
@@ -29,6 +30,9 @@ const App = () => {
         </Route>
         <Route path="/chart" exact={true}>
           <Chart />
+        </Route>
+        <Route path="/fmc" exact={true}>
+          <FetalMovementChart />
         </Route>
       </Switch>
       <BottomNavbar />

@@ -53,6 +53,27 @@ class DailyChartView(APIView):
         return Response(data=kicks_per_hour, status=200)
 
 
+class FetalMovementChartView(APIView):
+    def get(self, request, *args, **kwargs):
+        days = Kick.objects.datetimes("kick_time", "day")
+        data_per_day = []
+        for day in days:
+            qs = Kick.objects.filter(
+                kick_time__day=day.day,
+                kick_time__month=day.month,
+                kick_time__year=day.year,
+            ).order_by("kick_time")
+            data_per_day.append(
+                {
+                    "date": day.strftime("%d/%m/%Y"),
+                    "start": qs.earliest().kick_time,
+                    "stop": qs.latest().kick_time,
+                    "count": qs.count(),
+                }
+            )
+        return Response(data=data_per_day, status=200)
+
+
 class KickDatesView(APIView):
     """
     Return all the dates the baby has been kicking

@@ -54,6 +54,7 @@ export const Chart: React.FC = () => {
   return (
     <>
       <TitleBar title="Hourly Kicks" />
+      <br />
       <div className="container mt-5">
         {kickDates.length > 0 && (
           <div className="row">

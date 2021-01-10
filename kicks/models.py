@@ -26,12 +26,6 @@ class KickManager(models.Manager):
         """
         return self.get_today_kicks().count()
 
-    def get_today_kicks_by_hour(self, *args, **kwargs):
-        """
-        return hours of the baby is kicking
-        """
-        return self.get_today_kicks().datetimes("kick_time", "hour")
-
     def get_kicks_by_hour_for_date(self, datetime, *args, **kwargs):
         """
         return hours of the baby is kicking for a date
