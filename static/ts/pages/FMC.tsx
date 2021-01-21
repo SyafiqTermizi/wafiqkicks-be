@@ -39,8 +39,8 @@ export const FetalMovementChart = () => {
   return (
     <>
       <TitleBar title="Fetal Movement Chart" />
-      <div className="container mt-5">
-        <div className="row">
+      <div className="container mt-5 mb-5">
+        <div className="row mb-5">
           <div className="col-12">
             <table className="table table-striped text-center">
               <thead>

@@ -77,9 +77,10 @@ class Kick(models.Model):
             return True
         else:
             delta = timezone.now() - last_kick_time
+            today_kick_count = cls.objects.get_today_kicks().count()
 
             # only allow user to create kick once every minute
-            if delta.total_seconds() > 59:
+            if (today_kick_count < 10) and (delta.total_seconds() > 59):
                 return True
 
         return False
