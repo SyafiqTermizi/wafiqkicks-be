@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models import Count
+from django.db.models.aggregates import Max, Min
 from django.db.models.functions.datetime import Trunc
 from django.utils import timezone
 
@@ -41,15 +42,19 @@ class Kick(models.Model):
         if not today_kicks.exists():
             raise cls.DoesNotExist
 
+        today_kicks_qs = today_kicks.aggregate(
+            first=Min("kick_time"), last=Max("kick_time"), kicks=Count("pk")
+        )
+
         return {
-            "kicks": today_kicks.count(),
-            "first": today_kicks.earliest().kick_time,
-            "last": today_kicks.latest().kick_time,
+            "kicks": today_kicks_qs["kicks"],
+            "first": today_kicks_qs["first"],
+            "last": today_kicks_qs["last"],
         }
 
     @classmethod
     def get_hourly_kick_count_for_date(cls, date_time):
-        qs = list(
+        hourly_qs = list(
             cls.objects.filter(kick_time__date=date_time.date())
             .annotate(hours=Trunc("kick_time", "hour"))
             .values("hours")
@@ -58,7 +63,7 @@ class Kick(models.Model):
         )
 
         kicks_per_hour = {}
-        for item in qs:
+        for item in hourly_qs:
             try:
                 kicks_per_hour[item["hours"].strftime("%-I %p")] += 1
             except KeyError:
@@ -71,16 +76,15 @@ class Kick(models.Model):
         Check if user is allowed to create kick. If kick is less than a minute
         ago, return False
         """
-        try:
-            last_kick_time = cls.objects.latest().kick_time
-        except cls.DoesNotExist:
-            return True
-        else:
-            delta = timezone.now() - last_kick_time
-            today_kick_count = cls.objects.get_today_kicks().count()
+        kick_qs = cls.objects.get_today_kicks().aggregate(
+            count=Count("pk"), last_kick=Max("kick_time")
+        )
 
-            # only allow user to create kick once every minute
-            if (today_kick_count < 10) and (delta.total_seconds() > 59):
-                return True
+        if kick_qs["count"] == 0:
+            return True
+
+        delta = timezone.now() - kick_qs["last_kick"]
+        if (kick_qs["count"] < 10) and (delta.total_seconds() > 59):
+            return True
 
         return False
