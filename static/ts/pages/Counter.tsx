@@ -53,7 +53,6 @@ export const Counter: React.FC<Props> = ({
   }, []);
 
   const submit = () => {
-    setDisableButton(true);
     axios
       .post("/kicks/count-up/")
       .then((_) => fetchDailySummary())
