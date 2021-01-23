@@ -11,10 +11,8 @@ interface Props {
   setDisableButton: (value: any) => void;
 }
 
-export const Counter: React.FC<Props> = ({
-  disableButton,
-  setDisableButton,
-}) => {
+export const Counter: React.FC = () => {
+  const [disableButton, setDisableButton] = useState(false);
   const [dailySummary, setDailySummary] = useState({
     kicks: 0,
     first: "",

@@ -14,8 +14,6 @@ import { FetalMovementChart } from "./pages/FMC";
 import { BottomNavbar } from "./components/BottomNavbar";
 
 const App = () => {
-  const [disableButton, setDisableButton] = useState(false);
-
   return (
     <Router>
       <Switch>
@@ -23,10 +21,7 @@ const App = () => {
           <Redirect to="/home" />
         </Route>
         <Route path="/home" exact={true}>
-          <Counter
-            disableButton={disableButton}
-            setDisableButton={setDisableButton}
-          />
+          <Counter />
         </Route>
         <Route path="/chart" exact={true}>
           <Chart />
