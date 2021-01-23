@@ -1,4 +1,5 @@
 from datetime import datetime
+from django.db.models.aggregates import Count, Max, Min
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -49,20 +50,24 @@ class DailyChartView(APIView):
 
 class FetalMovementChartView(APIView):
     def get(self, request, *args, **kwargs):
-        days = Kick.objects.datetimes("kick_time", "day")
+        qs = (
+            Kick.objects.datetimes("kick_time", "day")
+            .annotate(
+                count=Count("pk"),
+                start=Min("kick_time__hour"),
+                stop=Max("kick_time__hour"),
+            )
+            .values("count", "start", "stop", "kick_time__date")
+        )
+
         data_per_day = []
-        for day in days:
-            qs = Kick.objects.filter(
-                kick_time__day=day.day,
-                kick_time__month=day.month,
-                kick_time__year=day.year,
-            ).order_by("kick_time")
+        for item in qs:
             data_per_day.append(
                 {
-                    "date": day.strftime("%d/%m/%Y"),
-                    "start": qs.earliest().kick_time,
-                    "stop": qs.latest().kick_time,
-                    "count": qs.count(),
+                    "date": item["kick_time__date"],
+                    "start": item["start"],
+                    "stop": item["stop"],
+                    "count": item["count"],
                 }
             )
         return Response(data=data_per_day, status=200)

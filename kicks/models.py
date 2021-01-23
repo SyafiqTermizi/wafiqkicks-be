@@ -1,8 +1,7 @@
 from django.db import models
 from django.db.models import Count
-from django.db.models.aggregates import Max, Min, Sum
+from django.db.models.aggregates import Max, Min
 from django.db.models.functions.datetime import Trunc
-from django.db.models.query_utils import Q
 from django.utils import timezone
 
 from .utils import get_start_hour
