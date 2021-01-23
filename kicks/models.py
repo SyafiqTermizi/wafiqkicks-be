@@ -1,7 +1,8 @@
 from django.db import models
 from django.db.models import Count
-from django.db.models.aggregates import Max, Min
+from django.db.models.aggregates import Max, Min, Sum
 from django.db.models.functions.datetime import Trunc
+from django.db.models.query_utils import Q
 from django.utils import timezone
 
 from .utils import get_start_hour
@@ -37,14 +38,13 @@ class Kick(models.Model):
             2. Last kick time
             3. Total kick for today
         """
-        today_kicks = cls.objects.get_today_kicks()
 
-        if not today_kicks.exists():
-            raise cls.DoesNotExist
-
-        today_kicks_qs = today_kicks.aggregate(
+        today_kicks_qs = cls.objects.get_today_kicks().aggregate(
             first=Min("kick_time"), last=Max("kick_time"), kicks=Count("pk")
         )
+
+        if not today_kicks_qs["kicks"]:
+            raise cls.DoesNotExist
 
         return {
             "kicks": today_kicks_qs["kicks"],
@@ -58,7 +58,6 @@ class Kick(models.Model):
             cls.objects.filter(kick_time__date=date_time.date())
             .annotate(hours=Trunc("kick_time", "hour"))
             .values("hours")
-            .annotate(kicks=Count("id"))
             .order_by("kick_time")
         )
 
