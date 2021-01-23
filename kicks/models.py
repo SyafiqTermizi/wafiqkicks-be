@@ -69,6 +69,30 @@ class Kick(models.Model):
         return kicks_per_hour
 
     @classmethod
+    def get_fetal_movement_chart(cls):
+        qs = (
+            cls.objects.datetimes("kick_time", "day")
+            .annotate(
+                count=Count("pk"),
+                start=Min("kick_time__hour"),
+                stop=Max("kick_time__hour"),
+            )
+            .values("count", "start", "stop", "kick_time__date")
+        )
+
+        data_per_day = []
+        for item in qs:
+            data_per_day.append(
+                {
+                    "date": item["kick_time__date"],
+                    "start": item["start"],
+                    "stop": item["stop"],
+                    "count": item["count"],
+                }
+            )
+        return data_per_day
+
+    @classmethod
     def can_kick(cls):
         """
         Check if user is allowed to create kick. If kick is less than a minute
