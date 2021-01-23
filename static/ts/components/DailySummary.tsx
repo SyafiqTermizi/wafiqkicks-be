@@ -12,24 +12,35 @@ export const DailySummary: React.FC<Props> = ({
   firstKickTime,
   lastKickTime,
 }) => (
-  <div className="row mt-3 text-center">
-    <div className="col-4">
-      <p>Kicks</p>
-      <p className="text-primary">
-        <b>{kicks}</b>
-      </p>
-    </div>
-    <div className="col-4">
-      <p>First</p>
-      <p className="text-primary">
-        <b>{dayjs(firstKickTime).format("h:mm A")}</b>
-      </p>
-    </div>
-    <div className="col-4">
-      <p>Last</p>
-      <p className="text-primary">
-        <b>{dayjs(lastKickTime).format("h:mm A")}</b>
-      </p>
+  <div className="row mt-5 text-center">
+    <div className="col mt-5">
+      <div className="card card-shadow">
+        <div className="card-body">
+          <div className="row">
+            <div className="col-4">
+              <p>
+                <small className="text-secondary">Kick Count</small>
+                <br/>
+                <b className="text-primary">{kicks}</b>
+              </p>
+            </div>
+            <div className="col-4">
+              <p>
+                <small className="text-secondary">First Kick</small>
+                <br/>
+                <b className="text-primary">{dayjs(firstKickTime).format("h:mm A")}</b>
+              </p>
+            </div>
+            <div className="col-4">
+              <p>
+                <small className="text-secondary">Last Kick</small>
+                <br/>
+                <b className="text-primary">{dayjs(lastKickTime).format("h:mm A")}</b>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 );
