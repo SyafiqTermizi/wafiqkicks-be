@@ -76,26 +76,30 @@ export const Chart: React.FC = () => {
         )}
         <div className="row mt-5">
           <div className="col-12">
-            <table className="table table-striped">
-              <thead>
-                <tr>
-                  <th scope="col">Time</th>
-                  <th scope="col">Count</th>
-                </tr>
-              </thead>
-              <tbody>
-                {Object.keys(kickPerHour).map((hour) => (
-                  <tr key={hour}>
-                    <td scope="row">{hour}</td>
-                    <td>{kickPerHour[hour]}</td>
+            <div className="card card-shadow">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Time</th>
+                    <th scope="col">Count</th>
                   </tr>
-                ))}
-                <tr>
-                  <th>Total</th>
-                  <td>{totalKicks}</td>
-                </tr>
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {Object.keys(kickPerHour).map((hour) => (
+                    <tr key={hour}>
+                      <td scope="row">{hour}</td>
+                      <td>{kickPerHour[hour]}</td>
+                    </tr>
+                  ))}
+                  <tr>
+                    <th>Total</th>
+                    <td>
+                      <b>{totalKicks}</b>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>

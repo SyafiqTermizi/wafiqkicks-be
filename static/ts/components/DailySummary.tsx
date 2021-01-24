@@ -20,22 +20,26 @@ export const DailySummary: React.FC<Props> = ({
             <div className="col-4">
               <p>
                 <small className="text-secondary">Kick Count</small>
-                <br/>
+                <br />
                 <b className="text-primary">{kicks}</b>
               </p>
             </div>
             <div className="col-4">
               <p>
                 <small className="text-secondary">First Kick</small>
-                <br/>
-                <b className="text-primary">{dayjs(firstKickTime).format("h:mm A")}</b>
+                <br />
+                <b className="text-primary">
+                  {dayjs(firstKickTime).format("h:mm A")}
+                </b>
               </p>
             </div>
             <div className="col-4">
               <p>
                 <small className="text-secondary">Last Kick</small>
-                <br/>
-                <b className="text-primary">{dayjs(lastKickTime).format("h:mm A")}</b>
+                <br />
+                <b className="text-primary">
+                  {dayjs(lastKickTime).format("h:mm A")}
+                </b>
               </p>
             </div>
           </div>

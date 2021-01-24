@@ -3,6 +3,7 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 
 import axios from "../axiosConfig";
+import { createArrayFromCount } from "../utils";
 import { TitleBar } from "../components/TitleBar";
 
 interface Data {
@@ -13,8 +14,6 @@ interface Data {
 }
 
 export const FetalMovementChart = () => {
-  const TOTAL_MOVEMENT = 10;
-
   const [datas, setDatas] = useState<Data[]>([]);
 
   useEffect(() => {
@@ -23,18 +22,6 @@ export const FetalMovementChart = () => {
       .then((res) => setDatas(res.data))
       .catch((err) => err);
   }, []);
-
-  const createThFromCount = (count: number, useCounter: boolean) => {
-    const emptyThCount = TOTAL_MOVEMENT - count;
-    const ths = [];
-    for (let i = 0; i < count; i++) {
-      ths.push(<th key={`i ${i}`}>{`${useCounter ? i + 1 : "x"}`}</th>);
-    }
-    for (let j = 0; j < emptyThCount; j++) {
-      ths.push(<th key={`j ${j}`}></th>);
-    }
-    return ths;
-  };
 
   return (
     <>
@@ -58,14 +45,24 @@ export const FetalMovementChart = () => {
                     Stop
                   </th>
                 </tr>
-                <tr>{createThFromCount(10, true)}</tr>
+                <tr>
+                  {createArrayFromCount(10, true).map((count) => (
+                    <th key={count}>{count}</th>
+                  ))}
+                </tr>
               </thead>
               <tbody>
                 {datas.map((data) => (
                   <tr key={data.date}>
                     <td>{data.date}</td>
                     <td>{dayjs(data.start).format("hh:mm a")}</td>
-                    {createThFromCount(data.count, false)}
+                    {createArrayFromCount(data.count, false).map(
+                      (x, counter) => (
+                        <td key={counter}>
+                          <b>{x}</b>
+                        </td>
+                      )
+                    )}
                     <td>{dayjs(data.stop).format("hh:mm a")}</td>
                   </tr>
                 ))}

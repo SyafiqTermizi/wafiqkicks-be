@@ -84,7 +84,7 @@ class Kick(models.Model):
         for item in qs:
             data_per_day.append(
                 {
-                    "date": item["kick_time__date"],
+                    "date": item["kick_time__date"].strftime("%d/%m/%y"),
                     "start": item["start"],
                     "stop": item["stop"],
                     "count": item["count"],
