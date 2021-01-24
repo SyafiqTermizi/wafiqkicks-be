@@ -74,8 +74,8 @@ export const Chart: React.FC = () => {
             </div>
           </div>
         )}
-        <div className="row mt-5">
-          <div className="col-12">
+        <div className="row mt-5 mb-5">
+          <div className="col-12 mb-5">
             <div className="card card-shadow">
               <table className="table">
                 <thead>
