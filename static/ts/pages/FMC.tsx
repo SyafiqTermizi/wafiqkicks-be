@@ -27,47 +27,34 @@ export const FetalMovementChart = () => {
     <>
       <TitleBar title="Fetal Movement Chart" />
       <div className="container mt-5 mb-5">
-        <div className="row mb-5">
-          <div className="col-12">
-            <table className="table table-striped text-center">
-              <thead>
-                <tr>
-                  <th scope="col" rowSpan={2}>
-                    Date
-                  </th>
-                  <th scope="col" rowSpan={2}>
-                    Start
-                  </th>
-                  <th scope="col" colSpan={10}>
-                    Movement
-                  </th>
-                  <th scope="col" rowSpan={2}>
-                    Stop
-                  </th>
-                </tr>
-                <tr>
-                  {createArrayFromCount(10, true).map((count) => (
-                    <th key={count}>{count}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {datas.map((data) => (
-                  <tr key={data.date}>
-                    <td>{data.date}</td>
-                    <td>{dayjs(data.start).format("hh:mm a")}</td>
-                    {createArrayFromCount(data.count, false).map(
-                      (x, counter) => (
-                        <td key={counter}>
-                          <b>{x}</b>
-                        </td>
-                      )
-                    )}
-                    <td>{dayjs(data.stop).format("hh:mm a")}</td>
+        <div className="mt-5 row mb-5">
+          <div className="mt-5 col-12">
+            <div className="card card-shadow">
+              <table className="table text-center">
+                <thead>
+                  <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Start</th>
+                    <th scope="col">Count</th>
+                    <th scope="col">Stop</th>
+                    <th scope="col">Duration</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {datas.map((data) => (
+                    <tr key={data.date}>
+                      <td>{data.date}</td>
+                      <td>{dayjs(data.start).format("h:mm a")}</td>
+                      <td>{data.count}</td>
+                      <td>{dayjs(data.stop).format("h:mm a")}</td>
+                      <td>
+                        {dayjs(data.stop).diff(dayjs(data.start), "hour")}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>

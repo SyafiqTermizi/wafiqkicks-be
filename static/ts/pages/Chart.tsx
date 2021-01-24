@@ -92,7 +92,7 @@ export const Chart: React.FC = () => {
                     </tr>
                   ))}
                   <tr>
-                    <th>Total</th>
+                    <td>Total</td>
                     <td>
                       <b>{totalKicks}</b>
                     </td>
