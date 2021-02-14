@@ -1,18 +1,19 @@
-FROM python:3.9-alpine
+FROM python:3.9.1-slim-buster
 
 ENV PYTHONUNBUFFERED 1
 
 WORKDIR /app
 
-RUN apk update \
+RUN apt-get update \
+  # dependencies for building Python packages
+  && apt-get install -y build-essential \
   # psycopg2 dependencies
-  && apk add --virtual build-deps gcc python3-dev musl-dev \
-  && apk add postgresql-dev \
-  # CFFI dependencies
-  && apk add libffi-dev py-cffi
+  && apt-get install -y libpq-dev \
+  # cleaning up unused files
+  && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
+  && rm -rf /var/lib/apt/lists/*
 
-# Requirements are installed here to ensure they will be cached.
 COPY pyproject.toml ./
 RUN pip install --upgrade pip
 RUN pip install poetry
-RUN poetry install
+RUN poetry install && rm pyproject.toml
