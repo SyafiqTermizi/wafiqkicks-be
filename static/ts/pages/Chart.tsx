@@ -1,9 +1,10 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
-import dayjs from "dayjs";
 
 import { isObjectEmpty } from "../utils";
 import { TitleBar } from "../components/TitleBar";
+import { HourlyKick } from "../components/HourlyKick";
+import { DateSelect } from "../components/DateSelect";
 import axios from "../axiosConfig";
 
 interface Data {
@@ -12,7 +13,6 @@ interface Data {
 
 export const Chart: React.FC = () => {
   const [kickPerHour, setKickPerHour] = useState<Data>({});
-  const [totalKicks, setTotalKicks] = useState<number>(0);
   const [kickDates, setKickDates] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>("");
 
@@ -22,10 +22,6 @@ export const Chart: React.FC = () => {
       .get(`/kicks/daily-chart/?date=${selectedDate}`)
       .then((res) => {
         if (isObjectEmpty(res.data)) return;
-        const sum = (previousValue: any, currentValue: any) =>
-          previousValue + currentValue;
-        const totalKicks = Object.values(res.data).reduce(sum, 0) as number;
-        setTotalKicks(totalKicks);
         setKickPerHour(res.data);
       })
       .catch((err) => err);
@@ -57,51 +53,13 @@ export const Chart: React.FC = () => {
       <br />
       <div className="container mt-5">
         {kickDates.length > 0 && (
-          <div className="row">
-            <div className="col-12">
-              <select
-                className="form-control"
-                name="date"
-                onChange={(e) => setSelectedDate(e.target.value)}
-                value={selectedDate}
-              >
-                {kickDates.map((date) => (
-                  <option value={date} key={date}>
-                    {dayjs(date).format("ddd D MMM YYYY")}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
+          <DateSelect
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+            kickDates={kickDates}
+          />
         )}
-        <div className="row mt-5 mb-5">
-          <div className="col-12 mb-5">
-            <div className="card card-shadow">
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th scope="col">Time</th>
-                    <th scope="col">Count</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {Object.keys(kickPerHour).map((hour) => (
-                    <tr key={hour}>
-                      <td scope="row">{hour}</td>
-                      <td>{kickPerHour[hour]}</td>
-                    </tr>
-                  ))}
-                  <tr>
-                    <td>Total</td>
-                    <td>
-                      <b>{totalKicks}</b>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
+        <HourlyKick hourlyKicks={kickPerHour} />
       </div>
     </>
   );

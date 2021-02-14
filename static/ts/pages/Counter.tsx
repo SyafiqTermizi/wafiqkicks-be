@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import axios from "../axiosConfig";
 import { TitleBar } from "../components/TitleBar";
 import { DailySummary } from "../components/DailySummary";
+import { KickButton } from "../components/KickButton";
 
 export const Counter: React.FC = () => {
   const [disableButton, setDisableButton] = useState(false);
@@ -56,17 +57,7 @@ export const Counter: React.FC = () => {
     <>
       <TitleBar title="Kick Counter" />
       <div className="container" style={{ paddingTop: "35vh" }}>
-        <div className="row">
-          <div className="col-12 text-center">
-            <button
-              onClick={() => submit()}
-              disabled={disableButton}
-              className="btn btn-primary btn-lg"
-            >
-              Kick!
-            </button>
-          </div>
-        </div>
+        <KickButton submitFunc={submit} disableButton={disableButton} />
         {Boolean(dailySummary.kicks) && (
           <DailySummary
             kicks={dailySummary.kicks}
