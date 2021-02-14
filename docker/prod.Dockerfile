@@ -16,4 +16,4 @@ RUN apt-get update \
 COPY . /app
 RUN pip install --upgrade pip
 RUN pip install poetry
-RUN poetry install && rm pyproject.toml
+RUN poetry install --no-dev --no-root
