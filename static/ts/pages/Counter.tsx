@@ -6,11 +6,6 @@ import axios from "../axiosConfig";
 import { TitleBar } from "../components/TitleBar";
 import { DailySummary } from "../components/DailySummary";
 
-interface Props {
-  disableButton: boolean;
-  setDisableButton: (value: any) => void;
-}
-
 export const Counter: React.FC = () => {
   const [disableButton, setDisableButton] = useState(false);
   const [dailySummary, setDailySummary] = useState({
