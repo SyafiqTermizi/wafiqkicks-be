@@ -95,18 +95,27 @@ class Kick(models.Model):
     @classmethod
     def can_kick(cls):
         """
-        Check if user is allowed to create kick. If kick is less than a minute
-        ago, return False
+        Check if user is allowed to create kick. User allowed to create kick when:
+        1. Time between last kick is more than a minute
+        2. Kick for a day is less than 10
+        3. It is currently 9a.m or later
         """
         kick_qs = cls.objects.get_today_kicks().aggregate(
             count=Count("pk"), last_kick=Max("kick_time")
         )
 
-        if kick_qs["count"] == 0:
+        # check if current time is 9a.m
+        is_more_than_nine_am = timezone.now().astimezone().hour >= 9
+
+        if is_more_than_nine_am and kick_qs["count"] == 0:
             return True
 
         delta = timezone.now() - kick_qs["last_kick"]
-        if (kick_qs["count"] < 10) and (delta.total_seconds() > 59):
+        if (
+            is_more_than_nine_am
+            and (kick_qs["count"] < 10)
+            and (delta.total_seconds() > 59)
+        ):
             return True
 
         return False
