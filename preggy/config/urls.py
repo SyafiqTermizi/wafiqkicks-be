@@ -27,7 +27,7 @@ class Index(TemplateView):
 urlpatterns = [
     path("", Index.as_view()),
     path("admin/", admin.site.urls),
-    path("kicks/", include("kicks.urls")),
+    path("kicks/", include("preggy.kicks.urls")),
 ]
 
 if settings.DEBUG:
