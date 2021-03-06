@@ -19,6 +19,8 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.views.generic import TemplateView
 
+from rest_framework.authtoken import views
+
 
 class Index(TemplateView):
     template_name = "index.html"
@@ -28,6 +30,7 @@ urlpatterns = [
     path("", Index.as_view()),
     path("admin/", admin.site.urls),
     path("kicks/", include("preggy.kicks.urls")),
+    path("users/", include("preggy.users.urls")),
 ]
 
 if settings.DEBUG:

@@ -29,18 +29,27 @@ ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(",")
 
 
 # Application definition
-
-INSTALLED_APPS = [
+DJANGO_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+]
+
+THIRD_PARTY_APPS = [
     "corsheaders",
     "rest_framework",
-    "preggy.kicks.apps.KicksConfig",
+    "rest_framework.authtoken",
 ]
+
+LOCAL_APPS = [
+    "preggy.kicks.apps.KicksConfig",
+    "preggy.users.apps.UsersConfig",
+]
+
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -89,6 +98,8 @@ DATABASES = {
 }
 
 
+AUTH_USER_MODEL = "users.User"
+
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 
@@ -128,3 +139,20 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "static"]
+
+
+# REST Framework authentication scheme
+# https://www.django-rest-framework.org/api-guide/authentication/#setting-the-authentication-scheme
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
+    ]
+}
+
+# Specifying authentication backends
+# https://docs.djangoproject.com/en/3.1/topics/auth/customizing/#specifying-authentication-backends
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "preggy.users.backends.EmailBackend",
+]
