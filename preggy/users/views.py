@@ -2,10 +2,10 @@ from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializers import AuthTokenSerializer
+from .serializers import AuthTokenSerializer, UserCreationSerializer
 
 
-class GetAuthTokenView(APIView):
+class SignInView(APIView):
     serializer_class = AuthTokenSerializer
 
     def get_serializer_context(self):
@@ -21,3 +21,15 @@ class GetAuthTokenView(APIView):
         user = serializer.validated_data["user"]
         token, _ = Token.objects.get_or_create(user=user)
         return Response({"token": token.key})
+
+
+class SignUpView(APIView):
+    serializer_class = UserCreationSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        # TODO: we'll add "confirm via email" feature if we receive spam
+        serializer.save()
+        return Response(serializer.data)

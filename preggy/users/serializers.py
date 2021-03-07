@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, get_user_model
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.utils.translation import gettext_lazy as _
@@ -54,3 +54,40 @@ class AuthTokenSerializer(serializers.Serializer):
 
         attrs["user"] = user
         return attrs
+
+
+class UserCreationSerializer(serializers.ModelSerializer):
+    """
+    A serializer that creates a user, with no privileges
+    """
+
+    password = serializers.CharField(write_only=True, trim_whitespace=False)
+    confirm_password = serializers.CharField(write_only=True, trim_whitespace=False)
+
+    class Meta:
+        model = get_user_model()
+        fields = (
+            "username",
+            "name",
+            "email",
+            "password",
+            "confirm_password",
+        )
+
+    def validate(self, attrs):
+        password = attrs.get("password")
+        confirm_password = attrs.get("confirm_password")
+
+        if password != confirm_password:
+            raise serializers.ValidationError(
+                _("The two password fields didn’t match."),
+                code="password_mismatch",
+            )
+        return super().validate(attrs)
+
+    def save(self):
+        del self.validated_data["confirm_password"]
+        data = dict(self.validated_data)
+
+        UserModel = get_user_model()
+        return UserModel.objects.create_user(**data)
