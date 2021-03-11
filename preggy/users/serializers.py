@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 
-class AuthTokenSerializer(serializers.Serializer):
+class SignInSerializer(serializers.Serializer):
     """
     This serializers allows user to enter username or email into a single field when logging in
     """
@@ -56,7 +56,7 @@ class AuthTokenSerializer(serializers.Serializer):
         return attrs
 
 
-class UserCreationSerializer(serializers.ModelSerializer):
+class SignUpSerializer(serializers.ModelSerializer):
     """
     A serializer that creates a user, with no privileges
     """
@@ -91,3 +91,23 @@ class UserCreationSerializer(serializers.ModelSerializer):
 
         UserModel = get_user_model()
         return UserModel.objects.create_user(**data)
+
+
+class FindUserByEmailSerializer(serializers.Serializer):
+    """
+    This serializer will find user by email. If the user doesn't exist,
+    raise validation error
+    """
+
+    user = None
+    email_address = serializers.EmailField()
+
+    def validate(self, attrs):
+        UserModel = get_user_model()
+        try:
+            self.user = UserModel.objects.get(email=attrs["email_address"])
+        except UserModel.DoesNotExist:
+            raise serializers.ValidationError(
+                _("User with given email does not exists")
+            )
+        return super().validate(attrs)
