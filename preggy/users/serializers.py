@@ -1,8 +1,12 @@
 from django.contrib.auth import authenticate, get_user_model
+from django.contrib.auth.tokens import default_token_generator
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
+from django.utils.http import urlsafe_base64_decode
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
+
+from .models import User
 
 
 class SignInSerializer(serializers.Serializer):
@@ -109,5 +113,47 @@ class FindUserByEmailSerializer(serializers.Serializer):
         except UserModel.DoesNotExist:
             raise serializers.ValidationError(
                 _("User with given email does not exists")
+            )
+        return super().validate(attrs)
+
+
+class ForgetPasswordResetSerializer(serializers.Serializer):
+    """
+    validate:
+    1. encoded user ID
+    2. reset password token
+    3. password 1 and password 2 is valid
+    """
+
+    token = serializers.CharField()
+    uid = serializers.CharField()
+    password = serializers.CharField(write_only=True, trim_whitespace=False)
+    confirm_password = serializers.CharField(write_only=True, trim_whitespace=False)
+
+    user: User = None
+
+    def validate_uid(self, uid: str) -> str:
+        """
+        Validate if uid is valid. If the UID is valid, set self.user = user
+        """
+        User = get_user_model()
+        user_pk = urlsafe_base64_decode(uid).decode()
+
+        try:
+            self.user = User.objects.get(pk=user_pk)
+        except User.DoesNotExist:
+            raise serializers.ValidationError(_("Invalid password reset token"))
+        return uid
+
+    def validate(self, attrs):
+        # Validate if given token is valid
+        if not default_token_generator.check_token(self.user, attrs["token"]):
+            raise serializers.ValidationError(_("Invalid password reset token"))
+
+        # Validate if password and confirm password is equal
+        if attrs["password"] != attrs["confirm_password"]:
+            raise serializers.ValidationError(
+                _("The two password fields didn’t match."),
+                code="password_mismatch",
             )
         return super().validate(attrs)

@@ -1,4 +1,3 @@
-from django import template
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
@@ -11,7 +10,12 @@ from rest_framework.views import APIView
 from rest_framework.serializers import ValidationError
 
 from .models import User
-from .serializers import SignInSerializer, SignUpSerializer, FindUserByEmailSerializer
+from .serializers import (
+    SignInSerializer,
+    SignUpSerializer,
+    FindUserByEmailSerializer,
+    ForgetPasswordResetSerializer,
+)
 
 
 class SignInView(APIView):
@@ -77,3 +81,14 @@ class ForgetPasswordFindByEmailView(APIView):
         token = default_token_generator.make_token(user)
         encoded_user_id = urlsafe_base64_encode(force_bytes(user.pk))
         return {"token": token, "uid": encoded_user_id}
+
+
+class ForgetPasswordResetView(APIView):
+    serializer_class = ForgetPasswordResetSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.user.set_password(serializer.validated_data["password"])
+        serializer.user.save()
+        return Response(status=201)
