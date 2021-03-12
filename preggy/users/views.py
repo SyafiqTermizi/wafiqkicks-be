@@ -35,7 +35,13 @@ class SignInView(APIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data["user"]
         token, _ = Token.objects.get_or_create(user=user)
-        return Response({"token": token.key})
+        return Response(
+            {
+                "token": token.key,
+                "username": user.username,
+                "email": user.email,
+            }
+        )
 
 
 class SignUpView(APIView):
