@@ -1,9 +1,9 @@
-from typing import Optional, Any
+from typing import Any, Optional
 
-from django.http import HttpRequest
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import BaseBackend
 from django.contrib.auth.models import AbstractBaseUser
+from django.http import HttpRequest
 
 
 class EmailBackend(BaseBackend):
