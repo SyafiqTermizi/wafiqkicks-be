@@ -6,11 +6,13 @@ from django.utils.translation import gettext_lazy as _
 
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework.serializers import ValidationError
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 
 from .models import User
 from .serializers import (
+    ResetPasswordSerializer,
     SignInSerializer,
     SignUpSerializer,
     FindUserByEmailSerializer,
@@ -50,7 +52,8 @@ class SignUpView(APIView):
 
 class ForgetPasswordFindByEmailView(APIView):
     """
-    This endpoint accepts email_address. Then it sends an email to the user if the email is valid.
+    This endpoint accepts email_address. Then it sends an email to the user if
+    the email is valid.
 
     Accepts:
         email_address: String
@@ -91,4 +94,21 @@ class ForgetPasswordResetView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.user.set_password(serializer.validated_data["password"])
         serializer.user.save()
+        return Response(status=201)
+
+
+class ResetPasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serializer = ResetPasswordSerializer(
+            data=request.data,
+            context={
+                "user": request.user,
+            },
+        )
+        serializer.is_valid(raise_exception=True)
+        user: User = request.user
+        user.set_password(serializer.validated_data["new_password"])
+        user.save()
         return Response(status=201)

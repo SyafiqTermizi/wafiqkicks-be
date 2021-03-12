@@ -1,3 +1,4 @@
+from typing import Dict
 from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.tokens import default_token_generator
 from django.core.exceptions import ValidationError
@@ -152,6 +153,36 @@ class ForgetPasswordResetSerializer(serializers.Serializer):
 
         # Validate if password and confirm password is equal
         if attrs["password"] != attrs["confirm_password"]:
+            raise serializers.ValidationError(
+                _("The two password fields didn’t match."),
+                code="password_mismatch",
+            )
+        return super().validate(attrs)
+
+
+class ResetPasswordSerializer(serializers.Serializer):
+    """
+    1. Validate if old password is correct
+    2. check if password and confirm password is equal
+    """
+
+    old_password = serializers.CharField()
+    new_password = serializers.CharField()
+    confirm_new_password = serializers.CharField()
+
+    def validate_old_password(self, old_password: str) -> str:
+        user: User = self.context["user"]
+
+        if not user.check_password(old_password):
+            raise serializers.ValidationError(
+                _("Invalid password"),
+                code="invalid_password",
+            )
+
+        return old_password
+
+    def validate(self, attrs: Dict) -> Dict:
+        if attrs["new_password"] != attrs["confirm_new_password"]:
             raise serializers.ValidationError(
                 _("The two password fields didn’t match."),
                 code="password_mismatch",
