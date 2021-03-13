@@ -1,10 +1,23 @@
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 
-const baseURL = process.env.NODE_ENV === "production" ? "https://syafiqtermizi.com" : "http://localhost:8000";
-const instance = axios.create({
-  baseURL,
-  xsrfCookieName: "csrftoken",
-  xsrfHeaderName: "X-CSRFTOKEN",
-});
+const createAxios = () => {
+  const baseURL =
+    process.env.NODE_ENV === "production"
+      ? "https://syafiqtermizi.com"
+      : "http://localhost:8000";
 
-export default instance;
+  const axiosConfig: AxiosRequestConfig = {
+    baseURL,
+    xsrfCookieName: "csrftoken",
+    xsrfHeaderName: "X-CSRFTOKEN",
+  };
+
+  if (localStorage.getItem("token")) {
+    axiosConfig.headers = {
+      Authorization: `Token ${localStorage.getItem("token")}`,
+    };
+  }
+
+  return axios.create(axiosConfig);
+};
+export default createAxios;
