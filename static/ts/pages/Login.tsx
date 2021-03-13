@@ -1,7 +1,11 @@
 import * as React from "react";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
+
 import axios from "../axiosConfig";
+import { useAppDispatch } from "../store/hooks";
+import { setValues } from "../store/userSlice";
+
 import { TitleBar } from "../components/TitleBar";
 import { InputErrors } from "../components/InputErros";
 
@@ -12,6 +16,7 @@ interface iLoginError {
 }
 
 export const Login: React.FC = () => {
+  const dispatch = useAppDispatch();
   const history = useHistory();
   const initialErrors: iLoginError = {
     email_or_username: [],
@@ -28,9 +33,7 @@ export const Login: React.FC = () => {
     axios()
       .post("/users/signin/", { email_or_username, password })
       .then((res) => {
-        Object.keys(res.data).map((key) => {
-          localStorage.setItem(key, res.data[key]);
-        });
+        dispatch(setValues(res.data));
         history.push("/");
       })
       .catch((err) => setErrors({ ...initialErrors, ...err.response.data }));
