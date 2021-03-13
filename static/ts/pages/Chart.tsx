@@ -18,7 +18,7 @@ export const Chart: React.FC = () => {
 
   const fetchData = () => {
     if (!selectedDate) return;
-    axios
+    axios()
       .get(`/kicks/daily-chart/?date=${selectedDate}`)
       .then((res) => {
         if (isObjectEmpty(res.data)) return;
@@ -28,7 +28,7 @@ export const Chart: React.FC = () => {
   };
 
   const fetchDates = () => {
-    axios
+    axios()
       .get("/kicks/dates/")
       .then((res) => {
         setKickDates(res.data);

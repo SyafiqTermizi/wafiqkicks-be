@@ -17,7 +17,7 @@ export const FetalMovementChart = () => {
   const [datas, setDatas] = useState<Data[]>([]);
 
   useEffect(() => {
-    axios
+    axios()
       .get("/kicks/fetal-movement-chart/")
       .then((res) => setDatas(res.data))
       .catch((err) => err);

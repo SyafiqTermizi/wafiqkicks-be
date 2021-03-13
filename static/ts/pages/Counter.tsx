@@ -33,7 +33,7 @@ export const Counter: React.FC = () => {
   };
 
   const fetchDailySummary = () => {
-    axios
+    axios()
       .get("/kicks/daily-summary/")
       .then((res) => {
         setDailySummary(res.data);
@@ -47,7 +47,7 @@ export const Counter: React.FC = () => {
   }, []);
 
   const submit = () => {
-    axios
+    axios()
       .post("/kicks/count-up/")
       .then((_) => fetchDailySummary())
       .catch((err) => err);

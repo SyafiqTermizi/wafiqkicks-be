@@ -10,6 +10,7 @@ import {
 import { Counter } from "./pages/Counter";
 import { Chart } from "./pages/Chart";
 import { FetalMovementChart } from "./pages/FMC";
+import { Login } from "./pages/Login";
 import { BottomNavbar } from "./components/BottomNavbar";
 
 const App = () => {
@@ -27,6 +28,9 @@ const App = () => {
         </Route>
         <Route path="/fmc" exact={true}>
           <FetalMovementChart />
+        </Route>
+        <Route path="/login" exact={true}>
+          <Login />
         </Route>
       </Switch>
       <BottomNavbar />
