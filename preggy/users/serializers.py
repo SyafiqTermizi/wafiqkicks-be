@@ -164,6 +164,10 @@ class ForgetPasswordResetSerializer(serializers.Serializer):
                 _("The two password fields didn’t match."),
                 code="password_mismatch",
             )
+
+        # Validate if password is valid
+        validate_password(password=attrs["password"])
+
         return super().validate(attrs)
 
 
