@@ -6,8 +6,12 @@ import { useAppSelector } from "./store/hooks";
 import { Counter } from "./pages/Counter";
 import { Chart } from "./pages/Chart";
 import { FetalMovementChart } from "./pages/FMC";
+
 import { Signin } from "./pages/Signin";
 import { Signup } from "./pages/Signup";
+import { ForgetPassword } from "./pages/ForgetPassword";
+import { ForgetPasswordReset } from "./pages/ForgetPasswordReset";
+
 import { BottomNavbar } from "./components/BottomNavbar";
 
 const AuthenticatedRoutes = () => (
@@ -38,6 +42,12 @@ const UnauthenticatedRoutes = () => (
     </Route>
     <Route path="/signup" exact={true}>
       <Signup />
+    </Route>
+    <Route path="/forget-password" exact={true}>
+      <ForgetPassword />
+    </Route>
+    <Route path="/forget-password-reset/:uid/:token" exact={true}>
+      <ForgetPasswordReset />
     </Route>
   </>
 );

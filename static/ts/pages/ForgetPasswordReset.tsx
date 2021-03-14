@@ -1,47 +1,47 @@
 import * as React from "react";
 import { useState } from "react";
-import { useHistory, Link } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 
 import axios from "../axiosConfig";
-import { useAppDispatch } from "../store/hooks";
-import { setValues } from "../store/userSlice";
 
 import { TitleBar } from "../components/TitleBar";
 import { InputErrors } from "../components/InputErros";
 
-interface iSigninError {
-  email_or_username: string[];
+interface iForgetPasswordReset {
   password: string[];
+  confirm_password: string[];
   non_field_errors: string[];
 }
 
-export const Signin: React.FC = () => {
-  const dispatch = useAppDispatch();
+export const ForgetPasswordReset = () => {
   const history = useHistory();
-  const initialErrors: iSigninError = {
-    email_or_username: [],
+  const { uid, token } = useParams<{ uid: string; token: string }>();
+  const initialErrors: iForgetPasswordReset = {
     password: [],
+    confirm_password: [],
     non_field_errors: [],
   };
 
-  const [email_or_username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [confirm_password, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState(initialErrors);
 
   const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     axios()
-      .post("/users/signin/", { email_or_username, password })
-      .then((res) => {
-        dispatch(setValues(res.data));
-        history.push("/");
+      .post("/users/forget-password/confirm/", {
+        uid,
+        token,
+        password,
+        confirm_password,
       })
+      .then((res) => history.push("/"))
       .catch((err) => setErrors({ ...initialErrors, ...err.response.data }));
   };
 
   return (
     <>
-      <TitleBar title="Signin" />
+      <TitleBar title="Forget Password" />
       <div className="container" style={{ marginTop: "30vh" }}>
         <div className="row justify-content-center">
           <div className="col-4">
@@ -50,26 +50,12 @@ export const Signin: React.FC = () => {
                 <form onSubmit={(e) => submitForm(e)}>
                   <div className="form-group">
                     <input
-                      type="text"
-                      name="email_or_username"
-                      placeholder="username or email"
-                      id="usernameoremail"
-                      className={`form-control ${
-                        errors.email_or_username.length > 0 ? "is-invalid" : ""
-                      }`}
-                      value={email_or_username}
-                      onChange={(e) => setUsername(e.target.value)}
-                    />
-                    <InputErrors errors={errors.email_or_username} />
-                  </div>
-                  <div className="form-group">
-                    <input
                       type="password"
                       name="password"
                       placeholder="password"
                       id="password"
                       className={`form-control ${
-                        errors.email_or_username.length > 0 ? "is-invalid" : ""
+                        errors.password.length > 0 ? "is-invalid" : ""
                       }`}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -78,8 +64,22 @@ export const Signin: React.FC = () => {
                   </div>
                   <div className="form-group">
                     <input
+                      type="password"
+                      name="confirm_password"
+                      placeholder="confirm password"
+                      id="confirm_password"
+                      className={`form-control ${
+                        errors.confirm_password.length > 0 ? "is-invalid" : ""
+                      }`}
+                      value={confirm_password}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                    />
+                    <InputErrors errors={errors.confirm_password} />
+                  </div>
+                  <div className="form-group">
+                    <input
                       type="submit"
-                      value="Signin"
+                      value="Submit"
                       className="btn btn-block btn-outline-primary"
                     />
                   </div>
@@ -90,19 +90,6 @@ export const Signin: React.FC = () => {
                   <div className="card-text text-danger">{errorMsg}</div>
                 </div>
               ))}
-              <div className="card-body text-center">
-                <div className="card-text">
-                  <Link to="/forget-password">Forget password?</Link>
-                </div>
-              </div>
-            </div>
-            <div className="card mt-2">
-              <div className="card-body text-center">
-                Don't have an account?{" "}
-                <b>
-                  <Link to="/signup">Signup</Link>
-                </b>
-              </div>
             </div>
           </div>
         </div>
