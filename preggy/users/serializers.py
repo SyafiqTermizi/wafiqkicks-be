@@ -3,6 +3,7 @@ from typing import Dict
 from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.tokens import default_token_generator
 from django.core.exceptions import ValidationError
+from django.contrib.auth.password_validation import validate_password
 from django.core.validators import validate_email
 from django.utils.http import urlsafe_base64_decode
 from django.utils.translation import gettext_lazy as _
@@ -84,11 +85,16 @@ class SignUpSerializer(serializers.ModelSerializer):
         password = attrs.get("password")
         confirm_password = attrs.get("confirm_password")
 
+        # Validate if password and confirm password is the same
         if password != confirm_password:
             raise serializers.ValidationError(
                 _("The two password fields didn’t match."),
                 code="password_mismatch",
             )
+
+        # Validate if password is valid
+        validate_password(password=password)
+
         return super().validate(attrs)
 
     def save(self):
