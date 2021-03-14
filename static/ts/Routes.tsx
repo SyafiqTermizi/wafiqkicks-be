@@ -6,7 +6,8 @@ import { useAppSelector } from "./store/hooks";
 import { Counter } from "./pages/Counter";
 import { Chart } from "./pages/Chart";
 import { FetalMovementChart } from "./pages/FMC";
-import { Login } from "./pages/Login";
+import { Signin } from "./pages/Signin";
+import { Signup } from "./pages/Signup";
 import { BottomNavbar } from "./components/BottomNavbar";
 
 const AuthenticatedRoutes = () => (
@@ -30,10 +31,13 @@ const AuthenticatedRoutes = () => (
 const UnauthenticatedRoutes = () => (
   <>
     <Route path="/" exact={true}>
-      <Redirect to="/login" />
+      <Redirect to="/signin" />
     </Route>
-    <Route path="/login" exact={true}>
-      <Login />
+    <Route path="/signin" exact={true}>
+      <Signin />
+    </Route>
+    <Route path="/signup" exact={true}>
+      <Signup />
     </Route>
   </>
 );

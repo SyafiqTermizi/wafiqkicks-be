@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 
 import axios from "../axiosConfig";
 import { useAppDispatch } from "../store/hooks";
@@ -9,16 +9,16 @@ import { setValues } from "../store/userSlice";
 import { TitleBar } from "../components/TitleBar";
 import { InputErrors } from "../components/InputErros";
 
-interface iLoginError {
+interface iSigninError {
   email_or_username: string[];
   password: string[];
   non_field_errors: string[];
 }
 
-export const Login: React.FC = () => {
+export const Signin: React.FC = () => {
   const dispatch = useAppDispatch();
   const history = useHistory();
-  const initialErrors: iLoginError = {
+  const initialErrors: iSigninError = {
     email_or_username: [],
     password: [],
     non_field_errors: [],
@@ -41,7 +41,7 @@ export const Login: React.FC = () => {
 
   return (
     <>
-      <TitleBar title="Login" />
+      <TitleBar title="Signin" />
       <div className="container" style={{ marginTop: "30vh" }}>
         <div className="row justify-content-center">
           <div className="col-4">
@@ -79,18 +79,26 @@ export const Login: React.FC = () => {
                   <div className="form-group">
                     <input
                       type="submit"
-                      value="Login"
+                      value="Signin"
                       className="btn btn-block btn-outline-primary"
                     />
                   </div>
                 </form>
               </div>
+              {errors.non_field_errors.map((errorMsg, idx) => (
+                <div className="card-body text-center" key={idx}>
+                  <div className="card-text text-danger">{errorMsg}</div>
+                </div>
+              ))}
             </div>
-            {errors.non_field_errors.map((errorMsg, idx) => (
-              <p key={idx} className="text-danger">
-                {errorMsg}
-              </p>
-            ))}
+            <div className="card mt-2">
+              <div className="card-body text-center">
+                Don't have an account?{" "}
+                <b>
+                  <Link to="/signup">Signup</Link>
+                </b>
+              </div>
+            </div>
           </div>
         </div>
       </div>
