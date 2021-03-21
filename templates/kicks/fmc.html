@@ -1,0 +1,23 @@
+{% load static kicks %}
+<div class="container">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Date</th>
+        <th scope="col">Start</th>
+        <th scope="col" colspan="10">Fetal Movement</th>
+        <th scope="col">Last</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for data in fmc_data %}
+      <tr>
+        <td>{{ data.date }}</td>
+        <td>{{ data.start|date:"g a" }}</td>
+        {{ data.count|generate_table_data }}
+        <td>{{ data.stop|date:"g a" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

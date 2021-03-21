@@ -3,7 +3,7 @@ from django.urls import path
 from .views import (
     DailyChartView,
     DailyKickSummaryView,
-    FetalMovementChartView,
+    GenerateFetalMovementChartView,
     KickCountUpView,
     KickDatesView,
 )
@@ -14,7 +14,7 @@ urlpatterns = (
     path("daily-chart/", DailyChartView.as_view(), name="daily_chart"),
     path(
         "fetal-movement-chart/",
-        FetalMovementChartView.as_view(),
+        GenerateFetalMovementChartView.as_view(),
         name="fetal-movement-chart",
     ),
     path("dates/", KickDatesView.as_view(), name="dates"),

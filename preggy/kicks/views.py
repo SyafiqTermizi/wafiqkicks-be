@@ -1,9 +1,15 @@
 from datetime import datetime
+from io import BytesIO
 
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import FileResponse
+from django.template.loader import render_to_string
+from django.views import View
 from rest_framework.exceptions import NotFound
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
+from weasyprint import HTML, CSS
 
 from .models import Kick
 
@@ -56,10 +62,41 @@ class DailyChartView(AuthenticatedAPIView):
         )
 
 
-class FetalMovementChartView(AuthenticatedAPIView):
+class GenerateFetalMovementChartView(LoginRequiredMixin, View):
+    """
+    Generate PDF for Fetal Movement chart.
+    """
+
+    pdf_styling = """
+    .container {
+        font-size: 12px;
+    }
+    table {
+        border-collapse: collapse;
+        border-spacing: 0;
+        width: 100%;
+        border: 1px solid black;
+    }
+    th, td {
+        border: 1px solid black; text-align: left; padding: 16px;
+    }
+    """
+
     def get(self, request, *args, **kwargs):
         fmc_data = Kick.get_fetal_movement_chart(user=request.user)
-        return Response(data=fmc_data, status=200)
+
+        html_string = render_to_string(
+            template_name="kicks/fmc.html", context={"fmc_data": fmc_data}
+        )
+        pdf_byte = HTML(string=html_string, encoding="UTF-8").write_pdf(
+            stylesheets=[CSS(string=self.pdf_styling)]
+        )
+
+        return FileResponse(
+            BytesIO(pdf_byte),
+            as_attachment=True,
+            filename="fetal-movement-chart.pdf",
+        )
 
 
 class KickDatesView(AuthenticatedAPIView):
