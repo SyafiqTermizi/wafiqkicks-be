@@ -1,5 +1,6 @@
 from datetime import datetime
 from io import BytesIO
+from preggy.kicks.serializers import FromToDateSerializer
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import FileResponse
@@ -83,7 +84,14 @@ class GenerateFetalMovementChartView(LoginRequiredMixin, View):
     """
 
     def get(self, request, *args, **kwargs):
-        fmc_data = Kick.get_fetal_movement_chart(user=request.user)
+        serializer = FromToDateSerializer(data=request.GET)
+        serializer.is_valid(raise_exception=True)
+
+        fmc_data = Kick.get_fetal_movement_chart(
+            user=request.user,
+            from_date=serializer.validated_data["from_date"],
+            to_date=serializer.validated_data["to_date"],
+        )
 
         html_string = render_to_string(
             template_name="kicks/fmc.html", context={"fmc_data": fmc_data}

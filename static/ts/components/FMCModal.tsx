@@ -87,7 +87,7 @@ export const FMCModal: React.FC<Props> = ({ dates }) => {
                 className={`btn btn-primary ${
                   !Boolean(fromDate) || !Boolean(toDate) ? "disabled" : ""
                 }`}
-                href={`/kicks/fetal-movement-chart?fromDate=${fromDate}&toDate=${toDate}`}
+                href={`/kicks/fetal-movement-chart?from_date=${fromDate}&to_date=${toDate}`}
               >
                 Download
               </a>

@@ -1,3 +1,4 @@
+from datetime import date
 from django.db import models
 from django.db.models import Count
 from django.db.models.aggregates import Max, Min
@@ -86,9 +87,13 @@ class Kick(models.Model):
         return kicks_per_hour
 
     @classmethod
-    def get_fetal_movement_chart(cls, user: User):
+    def get_fetal_movement_chart(cls, user: User, from_date: date, to_date: date):
         qs = (
-            cls.objects.filter(owned_by=user)
+            cls.objects.filter(
+                owned_by=user,
+                kick_time__date__gte=from_date,
+                kick_time__date__lte=to_date,
+            )
             .datetimes("kick_time", "day")
             .annotate(
                 count=Count("pk"),
