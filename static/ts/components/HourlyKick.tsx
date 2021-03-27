@@ -12,7 +12,7 @@ export const HourlyKick: React.FC<Props> = ({ hourlyKicks }) => {
 
   return (
     <div className="row mt-5 mb-5">
-      <div className="col-12 mb-5">
+      <div className="col-12">
         <div className="card card-shadow">
           <table className="table">
             <thead>

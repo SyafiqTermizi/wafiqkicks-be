@@ -5,6 +5,7 @@ import { isObjectEmpty } from "../utils";
 import { TitleBar } from "../components/TitleBar";
 import { HourlyKick } from "../components/HourlyKick";
 import { DateSelect } from "../components/DateSelect";
+import { FMCModal } from "../components/FMCModal";
 import axios from "../axiosConfig";
 
 interface Data {
@@ -60,12 +61,7 @@ export const Chart: React.FC = () => {
           />
         )}
         <HourlyKick hourlyKicks={kickPerHour} />
-        <a
-          href="/kicks/fetal-movement-chart"
-          className="btn btn-outline-primary btn-block"
-        >
-          Download Fetal Movement Chart
-        </a>
+        <FMCModal dates={kickDates} />
       </div>
     </>
   );
