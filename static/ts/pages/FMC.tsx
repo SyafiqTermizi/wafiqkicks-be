@@ -3,7 +3,6 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 
 import axios from "../axiosConfig";
-import { createArrayFromCount } from "../utils";
 import { TitleBar } from "../components/TitleBar";
 
 interface Data {

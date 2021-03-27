@@ -25,9 +25,6 @@ const AuthenticatedRoutes = () => (
     <Route path="/chart" exact={true}>
       <Chart />
     </Route>
-    <Route path="/fmc" exact={true}>
-      <FetalMovementChart />
-    </Route>
     <BottomNavbar />
   </>
 );

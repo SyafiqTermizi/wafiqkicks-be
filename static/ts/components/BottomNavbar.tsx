@@ -24,11 +24,6 @@ export const BottomNavbar = () => (
           <FontAwesomeIcon icon={faChartBar} />
         </NavLink>
       </div>
-      <div className="col-4 text-center">
-        <NavLink className="nav-link" activeClassName="text-primary" to="/fmc">
-          <FontAwesomeIcon icon={faTable} />
-        </NavLink>
-      </div>
     </div>
   </div>
 );

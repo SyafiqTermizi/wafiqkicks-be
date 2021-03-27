@@ -60,6 +60,12 @@ export const Chart: React.FC = () => {
           />
         )}
         <HourlyKick hourlyKicks={kickPerHour} />
+        <a
+          href="/kicks/fetal-movement-chart"
+          className="btn btn-outline-primary btn-block"
+        >
+          Download Fetal Movement Chart
+        </a>
       </div>
     </>
   );
