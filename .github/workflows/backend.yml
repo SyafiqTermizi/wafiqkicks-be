@@ -1,0 +1,18 @@
+name: Backend Unit Test
+
+on:
+  pull_request:
+    branches: [master]
+
+jobs:
+  unit_test:
+    name: Run unit test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run docker-compose
+        run: docker-compose -f docker/docker-compose.test.yml up -d
+
+      - name: Run unit test inside docker container
+        run: docker container exec docker_kicking_test_1 poetry run python manage.py test
