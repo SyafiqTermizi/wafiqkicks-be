@@ -17,4 +17,5 @@ jobs:
           repo: wafiq-kicks
           region: ap-southeast-1
           tags: latest,${{ github.sha }}
-          dockerfile: docker/prod.Dockerfile
+          dockerfile: prod.Dockerfile
+          path: docker/
