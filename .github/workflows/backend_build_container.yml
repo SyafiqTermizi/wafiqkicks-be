@@ -18,3 +18,4 @@ jobs:
           region: ap-southeast-1
           tags: latest,${{ github.sha }}
           dockerfile: docker/prod.Dockerfile
+          path: .
